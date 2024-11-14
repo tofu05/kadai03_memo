@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモ帳</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <h1>メモ帳アプリ</h1>
+    <h2>好きなメモを登録してね</h2>
+    <div class="input">
+        <div class="int">
+            タイトル<br>
+            <input id="int1" type="text" placeholder="タイトルを入力">
+        </div>
+        <divc class="inm">
+            本文<br>
+            <textarea id="inm1" placeholder="本文を入力"></textarea>
+
+        <div class="button">
+            <button id="save">保存</button>
+            <button id="delete">全削除</button>
+        </div>
+    </div>
+    </div>
+
+    <div class="listcss" id="list"></div>
+
+
+    <!-- javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            dLS();
+        });
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function dLS() {
+            $("#list").empty();
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                const html = `
+                <p>
+                    <span class="key"><strong>${escapeHtml(key)}</strong></span>
+                    <br>
+                    <span class="value">${escapeHtml(value)}</span>
+                    <br>
+                    <button class="delete-s" data-key="${key}">削除</button>
+                </p>
+                `;
+                $("#list").append(html);
+            }
+        };
+
+        $(document).on("click",".delete-s", function(){
+            const key = $(this).data("key");
+            localStorage.removeItem(key);
+            dLS();
+        });
+
+        $("#save").on("click", function () {
+            const key = $("#int1").val();
+            const value = $("#inm1").val();
+            localStorage.setItem(key, value);
+            dLS();
+            $("#int1").val('');
+            $("#inm1").val('');
+        });
+
+        $("#delete").on("click", function () {
+            localStorage.clear();
+            $("#int1").val('');
+            $("#inm1").val('');
+            dLS();
+        });
+
+    </script>
+    <!-- javascript -->
+
+</body>
+
+</html>
